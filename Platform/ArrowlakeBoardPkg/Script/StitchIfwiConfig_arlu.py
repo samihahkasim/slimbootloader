@@ -1,5 +1,5 @@
-## @ StitchIfwiConfig_arlh.py
-#  This is an IFWI stitch config script for ARL-H Slim Bootloader
+## @ StitchIfwiConfig_arlu.py
+#  This is an IFWI stitch config script for ARL-U Slim Bootloader
 #
 # Copyright (c) 2024, Intel Corporation. All rights reserved. <BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -36,9 +36,9 @@ stitching ingredients listed in step 2 below, please contact your Intel represen
 
   4. Stitch the final image
        EX:
-       Assuming stitching workspace is at D:\Stitch and building ifwi for ARL-H platform
+       Assuming stitching workspace is at D:\Stitch and building ifwi for ARL-U platform
        To stitch IFWI with SPI QUAD mode and Boot Guard profile VM:
-         StitchIfwi.py -b vm -p arlh -w D:\Stitch -s Stitch_Components.zip -c StitchIfwiConfig.py
+         StitchIfwi.py -b vm -p arlu -w D:\Stitch -s Stitch_Components.zip -c StitchIfwiConfig.py
 
 """
 
@@ -71,7 +71,7 @@ def get_bpmgen2_params_change_list ():
 
 def get_platform_sku():
     platform_sku ={
-        'arlh'    :   'Intel(R) MeteorLake P and ArrowLake P Chipsets - Consumer - SPI'
+        'arlu'    :   'Intel(R) MeteorLake P and ArrowLake P Chipsets - Consumer - SPI'
     }
     return platform_sku
 

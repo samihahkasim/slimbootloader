@@ -133,6 +133,7 @@ UpdateFspConfig (
   SpdData[1] = (UINT32)(UINTN) (((MEM_SPD0_CFG_DATA *)FindConfigDataByTag (CDATA_MEM_SPD0_TAG))->MemorySpdPtr0);
   SpdData[2] = (UINT32)(UINTN) (((MEM_SPD1_CFG_DATA *)FindConfigDataByTag (CDATA_MEM_SPD1_TAG))->MemorySpdPtr1);
   SpdData[3] = (UINT32)(UINTN) (((MEM_SPD2_CFG_DATA *)FindConfigDataByTag (CDATA_MEM_SPD2_TAG))->MemorySpdPtr2);
+  SpdData[4] = (UINT32)(UINTN) (((MEM_SPD3_CFG_DATA *)FindConfigDataByTag (CDATA_MEM_SPD3_TAG))->MemorySpdPtr3);
   Fspmcfg->MemorySpdPtr000  = SpdData[MemCfgData->SpdDataSel000];
   Fspmcfg->MemorySpdPtr001  = SpdData[MemCfgData->SpdDataSel001];
   Fspmcfg->MemorySpdPtr010  = SpdData[MemCfgData->SpdDataSel010];
@@ -358,6 +359,10 @@ UpdateFspConfig (
    case  PLATFORM_ID_ARL_S_SODIMM_RVP:
     DEBUG((DEBUG_INFO, "BoardIdArlHSODimm1DRvp board Id %x .....\n", BoardId));
     CopyMem(SaDisplayConfigTable, (VOID *)(UINTN)mArlsDdr5SODimmSbsRvpRowDisplayDdiConfig, sizeof(mArlsDdr5SODimmSbsRvpRowDisplayDdiConfig));
+    break;
+   case  PLATFORM_ID_ARL_H_LP5x_Rvp:
+    DEBUG((DEBUG_INFO, "BoardIdArlHlp5xDRvp board Id %x .....\n", BoardId));
+    CopyMem(SaDisplayConfigTable, (VOID *)(UINTN)mArlhLpddr5SODimmSbsRvpRowDisplayDdiConfig, sizeof(mArlhLpddr5SODimmSbsRvpRowDisplayDdiConfig));
     break;
   default:
     DEBUG((DEBUG_INFO, "DDI Init: Unsupported board Id %x .....\n", BoardId));

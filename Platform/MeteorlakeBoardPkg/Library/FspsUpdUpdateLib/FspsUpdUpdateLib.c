@@ -1,6 +1,6 @@
 /** @file
 
-  Copyright (c) 2020 - 2023, Intel Corporation. All rights reserved.<BR>
+  Copyright (c) 2020 - 2024, Intel Corporation. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -34,6 +34,9 @@
 #include <Library/WatchDogTimerLib.h>
 #include <PlatformData.h>
 #include <Library/ContainerLib.h>
+#include "HdaVerbTable.h"
+#include <Library/MemoryAllocationLib.h>
+#include <Library/BlMemoryAllocationLib.h>
 #include "TsnSubRegion.h"
 
 #define CPU_PCIE_DT_HALO_MAX_ROOT_PORT     3
@@ -387,6 +390,8 @@ UpdateFspConfig (
   BOOLEAN                     BiosProtected;
   EFI_STATUS                  Status;
   VBIOS_VBT_STRUCTURE         *VbtPtr;
+  UINT32                    *HdaVerbTablePtr;
+  UINT8                     HdaVerbTableNum;
 
   Address              = 0;
   FspsUpd              = (FSPS_UPD *) FspsUpdPtr;
@@ -594,6 +599,16 @@ UpdateFspConfig (
     FspsConfig->AtomTurboRatioLimitNumCore[Index]          = 0x0;
   }
 
+  // Set VerbTable is disabled by default. Enable it only when specified by config data.
+  if (FeaturesCfgData != NULL && (FeaturesCfgData->Features.HdaVerbTable != 0)){
+    HdaVerbTablePtr = (UINT32 *) AllocateZeroPool (2 * sizeof (UINT32));  // max 6 tables supported for now
+    if (HdaVerbTablePtr != NULL) {
+      HdaVerbTableNum = 0;
+      HdaVerbTablePtr[HdaVerbTableNum++]   = (UINT32)(UINTN) &HdaVerbTableAlc897;
+      FspsConfig->PchHdaVerbTablePtr      = (UINT32)(UINTN) HdaVerbTablePtr;
+      FspsConfig->PchHdaVerbTableEntryNum = HdaVerbTableNum;
+    }
+  }
   if(GetPayloadId () == 0) {
     // Disable SMI sources
     SmiEn = IoRead32((UINT32)(ACPI_BASE_ADDRESS + R_ACPI_IO_SMI_EN));

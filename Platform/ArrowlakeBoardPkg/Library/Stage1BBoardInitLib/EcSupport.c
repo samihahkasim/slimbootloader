@@ -150,6 +150,9 @@ GetBoardIdFromSmbus (
     case BoardIdArlsSodimmRvp:
       *PlatformId =  PLATFORM_ID_ARL_S_SODIMM_RVP;
       break;
+    case BoardIdArlhLP5x5Rvp:
+      *PlatformId =  PLATFORM_ID_ARL_H_LP5x_Rvp;
+      break;
     default:
     break;
   }
@@ -201,6 +204,9 @@ SendEcCommandTimeout (
   // Wait for EC to be ready (with a timeout)
   //
   ReceiveEcStatus (&EcStatus);
+  if (EcStatus == 0xFF) {
+    return EFI_DEVICE_ERROR;
+  }
   //
   // Check if output buffer bit(OBF) is set.
   // Read and discard the output buffer data so that next BIOS-EC cmd is in sync
@@ -394,6 +400,9 @@ GetBoardId (
       break;
     case BoardIdArlsSodimmRvp:
       *PlatformId =  PLATFORM_ID_ARL_S_SODIMM_RVP;
+      break;
+    case BoardIdArlhLP5x5Rvp:
+      *PlatformId =  PLATFORM_ID_ARL_H_LP5x_Rvp;
       break;
     default:
       DEBUG((DEBUG_INFO, "Unsupporteddd board Id %x .....\n", *PlatformId));

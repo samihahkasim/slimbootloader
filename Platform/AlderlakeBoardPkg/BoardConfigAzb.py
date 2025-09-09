@@ -24,7 +24,7 @@ class Board(BaseBoard):
         super(Board, self).__init__(*args, **kwargs)
         self.VERINFO_IMAGE_ID                 = 'SB_AZB'
         self.VERINFO_PROJ_MAJOR_VER           = 1
-        self.VERINFO_PROJ_MINOR_VER           = 6
+        self.VERINFO_PROJ_MINOR_VER           = 7
         self.VERINFO_CORE_MAJOR_VER           = 1
         self.VERINFO_CORE_MINOR_VER           = 0
         self.VERINFO_SVN                      = 1
@@ -78,7 +78,7 @@ class Board(BaseBoard):
         self.ENABLE_PCIE_PM                   = 1
         # 0: Disable  1: Enable  2: Auto (disable for UEFI payload, enable for others)
         # 3: Enable NOSMRR (for edk2-stable202411 and newer UEFI payload)  4: Auto NOSMRR
-        self.ENABLE_SMM_REBASE                = 4
+        self.ENABLE_SMM_REBASE                = 2
 
         # 0 - PCH UART0, 1 - PCH UART1, 2 - PCH UART2, 0xFF - EC UART 0x3F8
         self.DEBUG_PORT_NUMBER                = 0x0

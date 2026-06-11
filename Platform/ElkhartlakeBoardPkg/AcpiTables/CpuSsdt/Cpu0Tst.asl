@@ -112,7 +112,7 @@ DefinitionBlock(
       //               n - Number of T-states available
       //              _TSS(x).power = LFM.Power * (n-x)/n
       //
-      If (LAnd(LNot(TSSF),CondRefOf(\_SB.PR00._PSS)))
+      If (LAnd(LNot(TSSF), And(\_SB.CFGD, PPM_EIST)))
       {
         //
         // Acquire Mutex to make sure the initialization happens only once.
@@ -122,48 +122,50 @@ DefinitionBlock(
         // Only one thread will be able to acquire the mutex at a time, but the other threads which have acquired the mutex previously, will eventually try to execute the TSS initialization code.
         // So, let's check if TSS has already been initialized once again. If its initalized, skip the initialization.
         //
-        If (LAnd(LNot(TSSF),CondRefOf(\_SB.PR00._PSS)))
+        If (LAnd(LNot(TSSF), And(\_SB.CFGD, PPM_EIST)))
         {
           //
           // \_SB.OSCP[10] = Platform-Wide OS Capable for no limit 16 P-states
           //
-          If(And(\_SB.OSCP, 0x0400)) {
-            Store (SizeOf(\_SB.PR00.TPSS), Local3) //LFM Index from _PSS
-            Decrement(Local3)    // Index of LFM entry in _PSS
-            Store ( DerefOf(Index(DerefOf(Index(\_SB.PR00.TPSS,Local3)),1)),Local5) //LFM Power from _PSS
-          } Else {
-            Store (SizeOf(\_SB.PR00.LPSS), Local3) //LFM Index from _PSS
-            Decrement(Local3)    // Index of LFM entry in _PSS
-            Store ( DerefOf(Index(DerefOf(Index(\_SB.PR00.LPSS,Local3)),1)),Local5) //LFM Power from _PSS
-          }
+          If (CondRefOf(\_SB.PR00._PSS)) {
+            If(And(\_SB.OSCP, 0x0400)) {
+              Store (SizeOf(\_SB.PR00.TPSS), Local3) //LFM Index from _PSS
+              Decrement(Local3)    // Index of LFM entry in _PSS
+              Store ( DerefOf(Index(DerefOf(Index(\_SB.PR00.TPSS,Local3)),1)),Local5) //LFM Power from _PSS
+            } Else {
+              Store (SizeOf(\_SB.PR00.LPSS), Local3) //LFM Index from _PSS
+              Decrement(Local3)    // Index of LFM entry in _PSS
+              Store ( DerefOf(Index(DerefOf(Index(\_SB.PR00.LPSS,Local3)),1)),Local5) //LFM Power from _PSS
+            }
 
-          //
-          // Copy reference of appropiate TSS package based on Fine grained T-state support
-          // We'll update the power in the package directly (via the reference variable Local1)
-          //
-          // If Fine Grained T-states is enabled
-          //      TSMF
-          //    ELSE
-          //      TSMC
-          //
-          If(And(\_SB.CFGD,PPM_TSTATE_FINE_GRAINED))
-          {
-            Store ( RefOf(TSMF), Local1 )
-            Store ( SizeOf(TSMF),Local2 )
-          }
-          Else
-          {
-            Store ( RefOf(TSMC), Local1 )
-            Store ( SizeOf(TSMC),Local2 )
-          }
+            //
+            // Copy reference of appropiate TSS package based on Fine grained T-state support
+            // We'll update the power in the package directly (via the reference variable Local1)
+            //
+            // If Fine Grained T-states is enabled
+            //      TSMF
+            //    ELSE
+            //      TSMC
+            //
+            If(And(\_SB.CFGD,PPM_TSTATE_FINE_GRAINED))
+            {
+              Store ( RefOf(TSMF), Local1 )
+              Store ( SizeOf(TSMF),Local2 )
+            }
+            Else
+            {
+              Store ( RefOf(TSMC), Local1 )
+              Store ( SizeOf(TSMC),Local2 )
+            }
 
-          Store (0, Local0)
-          While(LLess(Local0, Local2))
-          {
-            Store(Divide(Multiply(Local5, Subtract(Local2, Local0)), Local2),
-                  Local4)    // Power for this entry
-            Store(Local4,Index(DerefOf(Index(DerefOf(Local1),Local0)),1))
-            Increment(Local0)
+            Store (0, Local0)
+            While(LLess(Local0, Local2))
+            {
+              Store(Divide(Multiply(Local5, Subtract(Local2, Local0)), Local2),
+                    Local4)    // Power for this entry
+              Store(Local4,Index(DerefOf(Index(DerefOf(Local1),Local0)),1))
+              Increment(Local0)
+            }
           }
 
           Store(Ones, TSSF)    // Set flag to indicate TSS table initialization is complete
